@@ -3,17 +3,19 @@ var ngMeteorCollections = angular.module('ngMeteor.collections', []);
 ngMeteorCollections.factory('$collection', ['$window', '$rootScope', 'HashKeyCopier', '$q',
 	function($window, $rootScope, HashKeyCopier, $q){
 		return function (name, scope, selector, options, publisher) {
+			var wrapper = {};
 			var collection = $window[name];
 			if(!selector) selector = {};
 			if(collection instanceof Meteor.Collection){
 				Deps.autorun(function(){
 					var subscription = Meteor.subscribe(name, selector, options, publisher);
-					scope[name] = HashKeyCopier.copyHashKeys(scope[name],collection.find(selector, options).fetch(),["_id"]);
-					if(!scope.$$phase){scope.$apply()} // I think this bit is redundant now.
+					console.log("calling deps.autorun");
+					wrapper.items = collection.find(selector, options).fetch();
+					if(!$rootScope.$$phase){$rootScope.$apply()}
 
 					// Temporary Fix
 					//===================================================================
-					scope[name].ready = function(fn){
+					wrapper.ready = function(fn){
 						var deferred = $q.defer();
 
 						isReady = setInterval(function() {
@@ -29,7 +31,7 @@ ngMeteorCollections.factory('$collection', ['$window', '$rootScope', 'HashKeyCop
 					    	fn();
 					    });
 					}
-					scope[name].add = function(data){
+					wrapper.add = function(data){
 						data = angular.copy(data);
 						upsert = function(item){
 							if(!item._id){
@@ -53,7 +55,7 @@ ngMeteorCollections.factory('$collection', ['$window', '$rootScope', 'HashKeyCop
 						}
 						Deps.flush();
 					}
-					scope[name].delete = function(data){
+					wrapper.delete = function(data){
 						if(!data){
 							console.error("Cannot delete null");
 						} else{
@@ -74,7 +76,7 @@ ngMeteorCollections.factory('$collection', ['$window', '$rootScope', 'HashKeyCop
 					//===================================================================
 
 				});
-				return scope[name];
+				return wrapper;
 			} else{
 				console.error('There is no Meteor Collection called "' + name + '"')
 			}

@@ -1,9 +1,9 @@
 // Define ngMeteor and its dependencies
 ngMeteor = angular.module('ngMeteor', [
-	'ngMeteor.collections', 
+	'ngMeteor.collections',
 	'ngMeteor.template',
 	'hashKeyCopier',
-	'ngRoute', 
+	'ngRoute',
 	'ngTouch',
 	'ngAnimate',
 	'ngCookies',
@@ -18,10 +18,3 @@ ngMeteor.config(['$interpolateProvider',
 		$interpolateProvider.endSymbol(']]');
 	}
 ]);
-
-// Manual initilisation of ngMeteor
-angular.element(document).ready(function() {
-	if (!angular.element(document).injector()){
-		angular.bootstrap(document, ['ngMeteor']);
-	}
-});
