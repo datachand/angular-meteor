@@ -1,52 +1,66 @@
 var ngMeteorTemplate = angular.module('ngMeteor.template', []);
 
 ngMeteorTemplate.run(['$templateCache',
-	function($templateCache) {
-		angular.forEach(Template, function(template, name){
-			if(name.charAt(0) != "_"){
-				var templateString = HTML.toHTML(template.render());
-				$templateCache.put(name, templateString);
-			}
-		});
-	}
+  function ($templateCache) {
+    angular.forEach(Template, function (template, name) {
+      if (name.charAt(0) != "_") { // Ignores templates with names starting with "_"
+        $templateCache.put(name, '<ng-template name="' + name + '"></span>');
+      }
+    });
+  }
 ]);
 
-ngMeteorTemplate.directive('ngTemplate', ['$templateCache', '$compile',
-	function($templateCache, $compile) {
-		return {
-			restrict: 'AE',
-			scope: true,
-			link: function(scope, element, attributes) {
-				var	name = attributes.ngTemplate || attributes.name,
-					template = $templateCache.get(name);
-				if(angular.isDefined(template)){
-					element.html(template);
-					element.replaceWith($compile(element.html())(scope));
-				} else{
-					console.error("ngMeteor: There is no template with the name '" + attributes.ngTemplate + "'");
-				}
-	        }
-		};
-	}
-]);
+ngMeteorTemplate.directive('ngTemplate', ['$templateCache',
+  function ($templateCache) {
+    return {
+      restrict: 'E',
+      scope: true,
+      template: function (element, attributes) {
+        var name = attributes.name,
+          template = Template[name],
+          templateRender = template.render(),
+          templateString = null;
 
-// Re-compiles template when rendering with Iron-Router
-angular.element(document).ready(function() {
-    if(Package['iron-router']){
-        var oldRun = Router.run;
-        Router.run = function() {
-            var runResult = oldRun.apply(this, arguments);
-            key = this._currentController.template
-            var oldRendered = Template[key].rendered;
-            Template[key].rendered = function(){
-                angular.element(document).injector().invoke(['$compile', '$document', '$rootScope', function($compile, $document, $rootScope){
-                    $compile($document)($rootScope);
-                    $rootScope.$digest();
-                    oldRendered.apply(this, arguments);
-                }]);
-                Template[key].rendered = oldRendered;
+        // Check for nested templates in the render object and replace them with the equivalent ngTemplate directive.
+        angular.forEach(templateRender, function (v, k) {
+          if (angular.isObject(v)) {
+            if (v._super) {
+              var transcludeTemplateName = v._super.kind.replace('Template_', '');
+              templateRender[k] = new HTML.Raw($templateCache.get(transcludeTemplateName));
             }
-            return runResult;
-        };
-    }
-});
+          }
+        });
+
+        if (angular.isDefined(template)) {
+          templateString = UI.toHTML(templateRender);
+        } else {
+          throw new ReferenceError("There is no Meteor template with the name '" + name + "'.");
+        }
+
+        return templateString;
+      },
+      link: function (scope, element, attributes) {
+        var name = attributes.name,
+          template = Template[name];
+
+        /**
+         * Includes the templates event maps.
+         * Attaching events using selectors is not the recommended approach taken by AngularJS.
+         * That being said, the template event maps are included to maintain flexibility in the Meteor + Angular integration.
+         * It is not ngMeteor's role to dictate which approach a developer should take,
+         * so ngMeteor has left it up to the user to decide which approach they prefer when developing.
+         **/
+        angular.forEach(template._events, function (eventObj) {
+          var eventType = eventObj.events,
+            eventSelector = eventObj.selector,
+            eventHandler = eventObj.handler;
+
+          // Test all eventType to see if there is an equivalent in jQuery.
+
+          $('ng-template[name="' + name + '"] ' + eventSelector + '').bind(eventType, eventHandler);
+        });
+
+      }
+    };
+  }
+]);
