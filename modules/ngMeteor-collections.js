@@ -9,6 +9,14 @@ ngMeteorCollections.factory('$collection', ['$q', 'HashKeyCopier',
         throw new TypeError("The first argument of $collection must be a Meteor.Collection object.");
       }
       return {
+
+        bindOne: function(scope, model, id) {
+          Deps.autorun(function(self) {
+            scope[model] = collection.findOne(id);
+            if (!scope.$$phase) scope.$apply(); // Update bindings in scope.
+          });
+        },
+
         bind: function (scope, model, auto) {
           auto = auto || false; // Sets default binding type.
           if (!(typeof auto === 'boolean')) { // Checks if auto is a boolean.
