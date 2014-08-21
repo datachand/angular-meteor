@@ -10,11 +10,42 @@ ngMeteorCollections.factory('$collection', ['$q', 'HashKeyCopier',
       }
       return {
 
+        bindOneAssociation: function(scope, model, association) {
+          scope.$watch(association, function(id) {
+            Deps.autorun(function(self) {
+              scope[model] = collection.findOne(id);
+              if (!scope.$$phase) scope.$apply(); // Update bindings in scope.
+            });
+          });
+        },
+
         bindOne: function(scope, model, id) {
           Deps.autorun(function(self) {
             scope[model] = collection.findOne(id);
             if (!scope.$$phase) scope.$apply(); // Update bindings in scope.
           });
+        },
+
+        paginate: function(scope, model, bindings) {
+          var rebind = function() {
+            Deps.autorun(function (self) {
+              var options = {
+                limit: parseInt(scope.perPage),
+                skip: (parseInt(scope.page) - 1) * parseInt(scope.perPage)
+              };
+              var ngCollection = new AngularMeteorCollection(collection, $q, selector, options);
+
+              // Bind collection to model in scope. Transfer $$hashKey based on _id.
+              scope[model] = HashKeyCopier.copyHashKeys(scope[model], ngCollection, ["_id"]);
+              scope[model + "Count"] = collection.find(selector).count();
+              if (!scope.$$phase) scope.$apply(); // Update bindings in scope.
+              scope.$on('$destroy', function () {
+                self.stop(); // Stop computation if scope is destroyed.
+              });
+            });
+          };
+          rebind();
+          scope.$watch("page", rebind);
         },
 
         bind: function (scope, model, auto) {
@@ -54,7 +85,10 @@ ngMeteorCollections.factory('$collection', ['$q', 'HashKeyCopier',
 ]);
 
 var AngularMeteorCollection = function (collection, $q, selector, options) {
-  var self = collection.find(selector, options).fetch();
+  console.log(options);
+  var cursor = collection.find(selector, options);
+  var self = cursor.fetch();
+  self.cursor = cursor;
 
   self.__proto__ = AngularMeteorCollection.prototype;
   self.__proto__.$q = $q;
