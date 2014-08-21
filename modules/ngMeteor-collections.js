@@ -33,6 +33,8 @@ ngMeteorCollections.factory('$collection', ['$q', 'HashKeyCopier',
                 limit: parseInt(scope.perPage),
                 skip: (parseInt(scope.page) - 1) * parseInt(scope.perPage)
               };
+              if (scope.sort) { options.sort = [scope.sort] }
+
               var ngCollection = new AngularMeteorCollection(collection, $q, selector, options);
 
               // Bind collection to model in scope. Transfer $$hashKey based on _id.
@@ -85,7 +87,6 @@ ngMeteorCollections.factory('$collection', ['$q', 'HashKeyCopier',
 ]);
 
 var AngularMeteorCollection = function (collection, $q, selector, options) {
-  console.log(options);
   var cursor = collection.find(selector, options);
   var self = cursor.fetch();
   self.cursor = cursor;
