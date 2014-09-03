@@ -1,20 +1,19 @@
-ngMeteor v0.2
+ngMeteor v0.3
 ========
 > The simplest no-conflict way to use AngularJS with Meteor, Meteorite and Atmosphere Smart Packages.
 
-> ngMeteor v0.1.22+ works with Blaze.
+> ngMeteor v0.3+ is now a meteor >= 0.9 package.
 
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>
-2. Install [Meteorite](https://github.com/oortcloud/meteorite#installing-meteorite) <code>npm install -g meteorite</code>
 3. Create a new meteor app using <code>meteor create myapp</code> or navigate to the root of your existing app.
-4. Install ngMeteor <code>mrt add ngMeteor</code>
+4. Install ngMeteor <code>meteor add superchris:ng-meteor</code>
 
 ## Usage
 ### Table of Contents
-- [New Data-Binding to avoid conflict](https://github.com/loneleeandroo/ngMeteor#new-data-binding-to-avoid-conflict)
-- [Using Meteor Collections](https://github.com/loneleeandroo/ngMeteor#using-meteor-collections)
-- [Adding controllers, directives, filters and services](https://github.com/loneleeandroo/ngMeteor#adding-controllers-directives-filters-and-services)
+- [New Data-Binding to avoid conflict](#new-data-binding-to-avoid-conflict)
+- [Using Meteor Collections](#using-meteor-collections)
+- [Adding controllers, directives, filters and services](#adding-controllers-directives-filters-and-services)
 - [Creating and inserting template views](https://github.com/loneleeandroo/ngMeteor#creating-and-inserting-template-views)
 - [Routing](https://github.com/loneleeandroo/ngMeteor#routing)
 - [Module Injection](https://github.com/loneleeandroo/ngMeteor#module-injection)
@@ -42,7 +41,9 @@ ngMeteor provides an AngularJS service called $collection, which is a wrapper fo
 | selector      | [Mongo Selector (Object or String)](http://docs.meteor.com/#selectors)    | Same as [Meteor Collection Find](http://docs.meteor.com/#find)    | No        |
 | options       | Object                                                                    | Same as [Meteor Collection Find](http://docs.meteor.com/#find)    | No        |
 
-The $collection service only has one method, and that is <code>bind</code>, which is used to bind the collection to an Angular model so that you can use it in your scope:
+The $collection service only has the following methods
+
+<code>bind</code> - used to bind the collection to an Angular model so that you can use it in your scope:
 
     bind(scope, model, auto)
 
@@ -58,6 +59,17 @@ Once a collection has been bound using the <code>bind</code> method, the model w
 | :------------             | :------   | :-------------------------            | :-------------                                                                                                                    |
 | <code>save(docs)</code>   | docs      | Object or Array of Objects            | Upsert an object into the collection. If no argument is passed, all the objects in the model to the collection will be upserted.  |
 | <code>remove(keys)</code> | keys      | _id String or Array of _id Strings    | Removes an object from the collection. If no argument is passed, all the objects in the collection will be removed.               |
+
+<code>bindOne</code> - used to bind the a single model to your scope:
+
+    bind(scope, model, id)
+
+| Arguments     | Type      | Description                                                                   | Required  | Default   |
+| :------------ | :-------- | :------------------------------------------------------------------------     | :-------- | :-------- |
+| scope         | Scope     | The scope the model will be bound to.                                         | Yes       |           |
+| model         | String    | The scope property the model will be bound to.                                | Yes       |           |
+| id            | String    | The id used to look up the model from the collection                          | Yes       |           |
+
 
 For example:
 
@@ -130,4 +142,3 @@ For example:
         });
 
     }
-
