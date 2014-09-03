@@ -1,6 +1,6 @@
 ngMeteor v0.3
 ========
-> The simplest no-conflict way to use AngularJS with Meteor, Meteorite and Atmosphere Smart Packages.
+> The simplest no-conflict way to use AngularJS with Meteor.
 
 > ngMeteor v0.3+ is now a meteor >= 0.9 package.
 
@@ -13,10 +13,6 @@ ngMeteor v0.3
 ### Table of Contents
 - [New Data-Binding to avoid conflict](#new-data-binding-to-avoid-conflict)
 - [Using Meteor Collections](#using-meteor-collections)
-- [Adding controllers, directives, filters and services](#adding-controllers-directives-filters-and-services)
-- [Creating and inserting template views](https://github.com/loneleeandroo/ngMeteor#creating-and-inserting-template-views)
-- [Routing](https://github.com/loneleeandroo/ngMeteor#routing)
-- [Module Injection](https://github.com/loneleeandroo/ngMeteor#module-injection)
 
 ### New Data-Binding to avoid conflict
 To prevent conflicts with Meteor's Blaze live templating engine, ngMeteor has changed the default AngularJS data bindings from <code>{{...}}</code> to <code>[[...]]</code>. For example:
@@ -53,12 +49,29 @@ The $collection service only has the following methods
 | model         | String    | The model the collection will be bound to.                                                                                                                                                                                                                               | Yes       |           |
 | auto          | Boolean   | By default, changes in the model will not automatically update the collection. However if set to true, changes in the client will be automatically propagated back to the collection. A deep watch is created when this is set to true, which sill degrade performance.  | No        | false     |
 
+
 Once a collection has been bound using the <code>bind</code> method, the model will have access to the following methods for upserting/removing objects in the collection. If the <code>auto</code> argument as been set to true, then the user will not need to call these methods because these methods will be called automatically whenever the model changes.
 
 | Method                    | Argument  | Type                                  | Description                                                                                                                       |
 | :------------             | :------   | :-------------------------            | :-------------                                                                                                                    |
 | <code>save(docs)</code>   | docs      | Object or Array of Objects            | Upsert an object into the collection. If no argument is passed, all the objects in the model to the collection will be upserted.  |
 | <code>remove(keys)</code> | keys      | _id String or Array of _id Strings    | Removes an object from the collection. If no argument is passed, all the objects in the collection will be removed.               |
+
+<code>paginate</code> - Like bind, but paginates the collection:
+
+    paginate(scope, model)
+
+| Arguments     | Type      | Description                                                                 | Required  | Default   |
+| :------------ | :-------- | :------------------------------------------------------------------------   | :-------- | :-------- |
+| scope         | Scope     | The scope the collection will be bound to.                                  | Yes       |           |
+| model         | String    | The model the collection will be bound to.                                  | Yes       |           |
+
+Paginate will use the following scope properties to implement pagination:
+
+| Property      | Type      | Description                                                                                 | Required  | Default   |
+| :------------ | :-------- | :------------------------------------------------------------------------                   | :-------- | :-------- |
+| perPage       | Number    | The numer of items on each page                                                             |           |
+| page          | Number    | The current page number (1 based). A $watch is setup to refetch the collection on change    | Yes       |           |
 
 <code>bindOne</code> - used to bind the a single model to your scope:
 
@@ -70,75 +83,14 @@ Once a collection has been bound using the <code>bind</code> method, the model w
 | model         | String    | The scope property the model will be bound to.                                | Yes       |           |
 | id            | String    | The id used to look up the model from the collection                          | Yes       |           |
 
+<code>bindOneAssociation</code> - used to bind the a related model to your scope:
 
-For example:
+    bind(scope, model, expression)
 
-    /**
-     * Assume autopublish package is removed so we can work with multiple publisher functions.
-     * If insecure package is also removed, then you'll need to define the collection permissions as well.
-     **/
+| Arguments     | Type      | Description                                                                                     | Required  | Default   |
+| :------------ | :-------- | :------------------------------------------------------------------------                       | :-------- | :-------- |
+| scope         | Scope     | The scope the model will be bound to.                                                           | Yes       |           |
+| model         | String    | The scope property the model will be bound to.                                                  | Yes       |           |
+| association   | String    | An angular expression. A $watch will be added and it will be used to lookup the related model   | Yes       |           |
 
-    // Define a new Meteor Collection
-    Todos = new Meteor.Collection('todos');
-
-    if (Meteor.isClient) {
-        ngMeteor.controller("mainCtrl", ['$scope', '$collection',
-            function($scope, $collection){
-
-                // Subscribe to all public Todos
-                Meteor.subscribe('publicTodos');
-
-                // Bind all the todos to $scope.todos
-                $collection(Todos).bind($scope, 'todos');
-
-                // Bind all sticky todos to $scope.stickyTodos
-                $collection(Todos, {sticky: true}).bind($scope, 'stickyTodos');
-
-                // todo might be an object like this {text: "Learn Angular", sticky: false}
-                // or an array like this [{text: "Learn Angular", sticky: false}, {text: "Hello World", sticky: true}]
-                $scope.save = function(todo) {
-                    $scope.todos.save(todo);
-                };
-
-                $scope.saveAll = function() {
-                    $scope.todos.save();
-                };
-
-                $scope.toSticky = function(todo) {
-                    if (angular.isArray(todo)){
-                        angular.forEach(todo, function(object) {
-                            object.sticky = true;
-                        });
-                    } else {
-                        todo.sticky = true;
-                    }
-
-                    $scope.stickyTodos.save(todo);
-                };
-
-                // todoId might be an string like this "WhrnEez5yBRgo4yEm"
-                // or an array like this ["WhrnEez5yBRgo4yEm","gH6Fa4DXA3XxQjXNS"]
-                $scope.remove = function(todoId) {
-                    $scope.todos.remove(todoId);
-                };
-
-                $scope.removeAll = function() {
-                    $scope.todos.remove();
-                };
-            }
-        ]);
-    }
-
-    if (Meteor.isServer) {
-
-        // Returns all objects in the Todos collection with public set to true.
-        Meteor.publish('publicTodos', function(){
-            return Todos.find({public: true});
-        });
-
-        // Returns all objects in the Todos collection with public set to false.
-        Meteor.publish('privateTodos', function(){
-            return Todos.find({public: false});
-        });
-
-    }
+An example app that demonstrates all the features of ng-meteor is available [here](http://github.com/superchris/ngmeteor-cookbook)
