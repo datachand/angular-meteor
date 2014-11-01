@@ -1,4 +1,4 @@
-angular-meteor v0.3.
+angular-meteor
 ========
 
 > Angular and Meteor, so happy together
