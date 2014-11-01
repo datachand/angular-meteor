@@ -4,11 +4,11 @@ ngMeteor = angular.module('ngMeteor', [
   'ngMeteor.template',
   'ngMeteor.user',
   'ngRoute',
-  'ngTouch',
-  'ngAnimate',
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
+  // 'ngTouch',
+  // 'ngAnimate',
+  // 'ngCookies',
+  // 'ngResource',
+  // 'ngSanitize',
   'hashKeyCopier'
 ]);
 

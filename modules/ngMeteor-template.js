@@ -9,7 +9,6 @@ ngMeteorTemplate.run(['$templateCache',
 				name != "prototype" &&
 				name != "body" && name.length > 0) {
 				var templateString;
-				debugger;
 				templateString = Blaze.toHTML(template);
 				$templateCache.put(name, templateString);
 			}

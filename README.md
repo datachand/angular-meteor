@@ -1,8 +1,8 @@
-ngMeteor v0.3
+angular-meteor v0.3.
 ========
 > The simplest no-conflict way to use AngularJS with Meteor.
 
-> ngMeteor v0.3+ is now a meteor >= 0.9 package.
+> angular-meteor v0.3.2 is compatible with Meteor 1.0.
 
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>

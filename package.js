@@ -1,7 +1,7 @@
 Package.describe({
-	summary: "The simplest no-conflict way to use AngularJS with Meteor, Meteorite and Atmosphere Smart Packages.",
-  version: "0.3.1",
-	name: "superchris:ng-meteor",
+	summary: "Angular and Meteor, so happy together. Bridges meteor reactivity and angular bindings, among other thing.",
+  version: "0.3.2",
+	name: "superchris:angular-meteor",
   git: "https://github.com/superchris/ngMeteor.git"
 });
 
@@ -10,19 +10,11 @@ Package.on_use(function (api) {
 	// Exports the ngMeteor package scope
 	api.export('ngMeteor', 'client');
 
+	api.use("superchris:angular", "client");
+	api.use("superchris:angular-route", "client");
 	// Files to load in Client only.
 	api.add_files([
-		// Lib Files
-		'lib/angular.js',
-		'lib/angular-csp.css',
-		'lib/angular-animate.js',
-		'lib/angular-cookies.js',
-		'lib/angular-resource.js',
-		'lib/angular-route.js',
-		'lib/angular-sanitize.js',
-		'lib/angular-touch.js',
 		'lib/angular-hash-key-copier.js',
-		// Module Files
 		'modules/ngMeteor-collections.js',
 		'modules/ngMeteor-template.js',
 		'modules/ngMeteor-user.js',
