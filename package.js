@@ -1,6 +1,6 @@
 Package.describe({
 	summary: "Angular and Meteor, so happy together.",
-  version: "0.3.2",
+  version: "0.3.3",
 	name: "superchris:angular-meteor",
   git: "https://github.com/superchris/ngMeteor.git"
 });

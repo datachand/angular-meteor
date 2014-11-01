@@ -1,31 +1,69 @@
 angular-meteor v0.3.
 ========
-> The simplest no-conflict way to use AngularJS with Meteor.
 
 > angular-meteor v0.3.2 is compatible with Meteor 1.0.
 
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>
 3. Create a new meteor app using <code>meteor create myapp</code> or navigate to the root of your existing app.
-4. Install ngMeteor <code>meteor add superchris:ng-meteor</code>
+4. Install angular-meteor <code>meteor add superchris:ng-meteor</code>
 
-## Usage
-### Table of Contents
-- [New Data-Binding to avoid conflict](#new-data-binding-to-avoid-conflict)
-- [Using Meteor Collections](#using-meteor-collections)
+### Bootstrapping your module
 
-### New Data-Binding to avoid conflict
-To prevent conflicts with Meteor's Blaze live templating engine, ngMeteor has changed the default AngularJS data bindings from <code>{{...}}</code> to <code>[[...]]</code>. For example:
+With Meteor, you lose ng-app. It's not a big deal though.
+Make a lib/app.(coffee | js) that bootstraps and depends on ngMeteor:
 
+````coffeescript
+    angular.module "app", ["ngMeteor", "ngRoute"]
+
+    Meteor.startup ->
+      angular.bootstrap(document, ["app"])
+````
+
+### Angular expressions
+
+You'll need to use [[]] instead of {{}} in your angular expressions. Blaze, meteor's
+template engine, takes over {{}} and I have not yet found a way around this. For example:
+
+````html
     <div>
         <label>Name:</label>
         <input type="text" ng-model="yourName" placeholder="Enter a name here">
         <hr>
         <h1>Hello [[yourName]]!</h1>
     </div>
+````
 
-### Using Meteor Collections
-> If you're upgrading from v0.1 please read this section for changes on using the $collection service.
+### Templates
+
+Your templates with live in the templates folder of your Meteor app. They will
+need to be wrapped with a template element with a name attribute. This name attribute
+is what you will use to refer to your template in routes, directives, etc.
+
+````html
+<template name="recipe.html">
+  <div id="recipe_view">
+    <dl>
+      <dt>[[recipe.title]]</dt>
+      <dd>[[recipe.description]]</dd>
+      <dd>[[category.name]]</dd>
+    </dl>
+    <p>
+      Ingredients:
+      <ul>
+        <li ng-repeat="ingredient in recipe.ingredients">[[ingredient.name]]</li>
+      </ul>
+    </p>
+    <a href="#recipes/[[recipe._id]]/edit">Edit</a>
+  </div>
+</template>
+````
+### Services
+
+ngMeteor gives you two services you'll use in your app to talk to Meteor
+from Angular: `$collection` and `$user`
+
+### $collecion
 
 ngMeteor provides an AngularJS service called $collection, which is a wrapper for [Meteor collections](http://docs.meteor.com/#meteor_collection) to enable reactivity within AngularJS. The $collection service no longer subscribes to a publisher function automatically, so you must explicitly subscribe to a publisher function before calling the $collection service.
 
@@ -93,4 +131,12 @@ Paginate will use the following scope properties to implement pagination:
 | model         | String    | The scope property the model will be bound to.                                                  | Yes       |           |
 | association   | String    | An angular expression. A $watch will be added and it will be used to lookup the related model   | Yes       |           |
 
-An example app that demonstrates all the features of ng-meteor is available [here](http://github.com/superchris/ngmeteor-cookbook)
+### Example apps
+
+* [Leaderboard]
+* [Cookbook](http://github.com/superchris/ngmeteor-cookbook)
+
+### Acknowledgement
+
+This project started as [ngMeteor](https://github.com/loneleeandroo/ngMeteor), a pre-0.9 atmosphere package. I've updated
+it for Meteor 1.0 and added several features.
