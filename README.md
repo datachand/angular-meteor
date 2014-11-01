@@ -71,7 +71,7 @@ is what you will use to refer to your template in routes, directives, etc.
 ngMeteor gives you two services you'll use in your app to talk to Meteor
 from Angular: `$collection` and `$user`
 
-### $collecion
+### $collection
 
 ngMeteor provides an AngularJS service called $collection, which is a wrapper for [Meteor collections](http://docs.meteor.com/#meteor_collection) to enable reactivity within AngularJS. The $collection service no longer subscribes to a publisher function automatically, so you must explicitly subscribe to a publisher function before calling the $collection service.
 
@@ -138,6 +138,19 @@ Paginate will use the following scope properties to implement pagination:
 | scope         | Scope     | The scope the model will be bound to.                                                           | Yes       |           |
 | model         | String    | The scope property the model will be bound to.                                                  | Yes       |           |
 | association   | String    | An angular expression. A $watch will be added and it will be used to lookup the related model   | Yes       |           |
+
+### $user
+
+`$user` only has one method, `bind`:
+
+<code>bind</code> - used to bind Meteor.user to an Angular model so that you can use it in your scope:
+
+    bind(scope, model)
+
+| Arguments     | Type      | Description                                                                                                                                                                                                                                                              | Required  | Default   |
+| :------------ | :-------- | :------------------------------------------------------------------------                                                                                                                                                                                                | :-------- | :-------- |
+| scope         | Scope     | The scope the user will be bound to.                                                                                                                                                                                                                               | Yes       |           |
+| model         | String    | The model the user will be bound to.                                                                                                                                                                                                                               | Yes       |           |
 
 ### Example apps
 
