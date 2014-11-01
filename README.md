@@ -154,7 +154,7 @@ Paginate will use the following scope properties to implement pagination:
 
 ### Example apps
 
-* [Leaderboard]
+* [Leaderboard](http://github.com/superchris/ngmeteor-leaderboard)
 * [Cookbook](http://github.com/superchris/ngmeteor-cookbook)
 
 ### Acknowledgement
