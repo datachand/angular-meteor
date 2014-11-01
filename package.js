@@ -1,5 +1,5 @@
 Package.describe({
-	summary: "Angular and Meteor, so happy together. Bridges meteor reactivity and angular bindings, among other thing.",
+	summary: "Angular and Meteor, so happy together.",
   version: "0.3.2",
 	name: "superchris:angular-meteor",
   git: "https://github.com/superchris/ngMeteor.git"
@@ -10,8 +10,7 @@ Package.on_use(function (api) {
 	// Exports the ngMeteor package scope
 	api.export('ngMeteor', 'client');
 
-	api.use("superchris:angular", "client");
-	api.use("superchris:angular-route", "client");
+	api.use("superchris:angular@1.3.2", "client");
 	// Files to load in Client only.
 	api.add_files([
 		'lib/angular-hash-key-copier.js',
