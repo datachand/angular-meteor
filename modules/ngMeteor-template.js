@@ -3,13 +3,14 @@ var ngMeteorTemplate = angular.module('ngMeteor.template', []);
 ngMeteorTemplate.run(['$templateCache',
 	function($templateCache) {
 		angular.forEach(Template, function(template, name){
-			if(name.charAt(0) != "_" && name != "prototype"){
+
+			if(Blaze.isTemplate(template) &&
+				name.charAt(0) != "_" &&
+				name != "prototype" &&
+				name != "body" && name.length > 0) {
 				var templateString;
-				// test for pre 0.8.3
-				if(template.render)
-					templateString = HTML.toHTML(template.render());
-				else
-					templateString = Blaze.toHTML(template);
+				debugger;
+				templateString = Blaze.toHTML(template);
 				$templateCache.put(name, templateString);
 			}
 		});
