@@ -7,6 +7,10 @@ angular-meteor is a meteor package that allows you to easily build meteor
 applications with an angular front end. It bridges the reactivity of meteor
 with the binding of angular.
 
+### Compatibility
+
+Version 0.3.2 and later has been tested with Meteor 1.0
+
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>
 3. Create a new meteor app using <code>meteor create myapp</code> or navigate to the root of your existing app.
