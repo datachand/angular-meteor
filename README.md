@@ -1,7 +1,11 @@
 angular-meteor v0.3.
 ========
 
-> angular-meteor v0.3.2 is compatible with Meteor 1.0.
+> Angular and Meteor, so happy together
+
+angular-meteor is a meteor package that allows you to easily build meteor
+applications with an angular front end. It bridges the reactivity of meteor
+with the binding of angular.
 
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>
