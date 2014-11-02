@@ -156,8 +156,9 @@ Paginate will use the following scope properties to implement pagination:
 
 * [Leaderboard](http://github.com/superchris/ngmeteor-leaderboard)
 * [Cookbook](http://github.com/superchris/ngmeteor-cookbook)
+* [Kanban Board](http://github.com/superchris/meteor-kanban)
 
 ### Acknowledgement
 
-This project started as [ngMeteor](https://github.com/loneleeandroo/ngMeteor), a pre-0.9 atmosphere package. I've updated
+This project started as [ngMeteor](https://github.com/loneleeandroo/ngMeteor), a pre-0.9 meteorite package. I've updated
 it for Meteor 1.0 and added several features.
