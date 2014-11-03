@@ -14,7 +14,7 @@ Version 0.3.2 and later has been tested with Meteor 1.0
 ## Quick start
 1. Install [Meteor](http://docs.meteor.com/#quickstart) <code>curl https://install.meteor.com | /bin/sh</code>
 3. Create a new meteor app using <code>meteor create myapp</code> or navigate to the root of your existing app.
-4. Install angular-meteor <code>meteor add superchris:ng-meteor</code>
+4. Install angular-meteor <code>meteor add superchris:angular-meteor</code>
 
 ### Bootstrapping your module
 
